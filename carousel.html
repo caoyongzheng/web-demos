@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>轮播</title>
+    <style media="screen">
+      .h-center {
+        margin: auto;
+        display: block;
+      }
+      .carousel {
+        position: relative;
+        width: 400px;
+        height: 300px;
+        overflow: hidden;
+      }
+      .carousel > [slide] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border: solid 1px red;
+        box-sizing: border-box;
+      }
+      [slide].transition {
+        transition: left 300ms ease-in-out, top 300ms ease-in-out;
+      }
+      .active {
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="carousel h-center">
+      <img slide class="active" src="http://placehold.it/400x300">
+      <img slide src="http://placehold.it/400x300">
+      <img slide src="http://placehold.it/400x300">
+    </div>
+    <button type="button" name="button" class="pre">pre</button>
+    <button type="button" name="button" class="next">next</button>
+    <script type="text/javascript">
+      const c = {};
+      function init() {
+        c.slides = slides = document.querySelectorAll('[slide]');
+        c.slides.forEach(function(slide, i) {
+          slide.setAttribute('slide', i);
+          slide.classList.add('transition')
+        });
+        c.active = 0;
+        c.slides[0].classList.add('active');
+      }
+      function getActiveSlide() {
+        return document.querySelector('.active')
+      }
+      function toggle(slideIndex) {
+        if (c.moving) {
+          return
+        }
+        c.moving = true
+
+        const preActive = c.active
+        const active = (slideIndex + c.slides.length) % c.slides.length
+
+        c.slides[active].classList.remove('transition')
+        if (slideIndex > preActive) {
+          c.slides[active].style.left = '100%'
+        } else {
+          c.slides[active].style.left = '-100%'
+        }
+        setTimeout(function() {
+
+          c.slides[active].classList.add('transition')
+          c.slides[active].style.left = 0
+          c.slides[preActive].style.left = slideIndex > preActive ? '-100%' : '100%'
+          getActiveSlide().classList.remove('active')
+          c.slides[active].classList.add('active')
+          c.active = active
+          setTimeout(function() {
+            c.moving = false
+          }, 330)
+        }, 0)
+      }
+      document.querySelector('.next').addEventListener('click', function(e) {
+        const curActiveSlide = getActiveSlide().getAttribute('slide');
+        toggle(parseInt(curActiveSlide) + 1);
+      });
+      document.querySelector('.pre').addEventListener('click', function(e) {
+        const curActiveSlide = getActiveSlide().getAttribute('slide');
+        toggle(parseInt(curActiveSlide) - 1);
+      });
+      init();
+    </script>
+  </body>
+</html>
