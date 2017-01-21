@@ -8,6 +8,6 @@ app.listen(8000, function(err) {
   if (err) {
     console.error(err)
   } else {
-    console.log('Page is running at: http://localhost:8000')
+    console.log('Page is running at: http://localhost:8000/src')
   }
 })

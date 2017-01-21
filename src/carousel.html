@@ -52,17 +52,20 @@
   </head>
   <body>
     <div id="carousel" class="carousel h-center">
-      <img slide class="active" src="//placehold.it/400x300">
+      <img slide src="//placehold.it/400x300">
       <img slide src="//placehold.it/400x300">
       <img slide src="//placehold.it/400x300">
     </div>
     <div class="row">
       <div class="h-center" style="margin-top: 30px;">
-        <div type="button" name="button" class="pre">pre</div>
-        <div type="button" name="button" class="next">next</div>
+        <div type="button" class="pre">pre</div>
+        <div type="button" class="next">next</div>
       </div>
     </div>
-    <script src="//cdn.jsdelivr.net/classlist/2014.01.31/classList.min.js" charset="utf-8"></script>
+    <div class="row">
+      <div class="h-center" id="board">
+      </div>
+    </div>
     <script type="text/javascript">
       function Carousel(carouselEl) {
         var slides = carouselEl.querySelectorAll('[slide]');
@@ -70,11 +73,12 @@
         var moving = false;
 
         slides[0].classList.add('active');
-        slides.forEach(function(slide, i) {
-          slide.setAttribute('slide', i);
-          slide.classList.add('transition');
-        });
-        slides[active].classList.add('active')
+
+        for (var i = 0; i < slides.length; i++) {
+          slides[i].setAttribute('slide', i);
+          slides[i].classList.add('transition');
+        }
+        slides[active].classList.add('active');
 
         function getActiveSlide() {
           return slides[active];
@@ -94,16 +98,17 @@
           } else {
             slides[nActive].style.left = '-100%'
           }
+
           setTimeout(function() {
             slides[nActive].classList.add('transition');
             slides[nActive].style.left = 0;
             slides[active].style.left = nextActive > active ? '-100%' : '100%';
-            getActiveSlide().classList.remove('active');
             slides[nActive].classList.add('active');
-            active = nActive;
             setTimeout(function() {
+              getActiveSlide().classList.remove('active');
+              active = nActive;
               moving = false;
-            }, 325);
+            }, 300);
           }, 0);
         }
 
@@ -119,8 +124,7 @@
           pre,
         }
       }
-      const c = new Carousel(document.getElementById('carousel'));
-      setTimeout()
+      const c = new Carousel(document.querySelector('#carousel'));
       document.querySelector('.next').addEventListener('click', function(e) {
         c.next();
       });
