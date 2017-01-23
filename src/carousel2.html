@@ -158,8 +158,24 @@
         function ease(x) {
           return 1 - Math.pow(1 - x, 2)
         }
+        function next() {
+          animation(offset, (getActive() + 1) * width, 250, setOffset)
+        }
+        function pre() {
+          animation(offset, (getActive() - 1) * width, 250, setOffset)
+        }
+        return {
+          next,
+          pre,
+        }
       }
-      new Carousel(document.getElementById('carousel'))
+      const c = new Carousel(document.getElementById('carousel'))
+      document.querySelector('.next').addEventListener('click', function(e) {
+        c.next();
+      });
+      document.querySelector('.pre').addEventListener('click', function(e) {
+        c.pre();
+      });
     </script>
   </body>
 </html>
