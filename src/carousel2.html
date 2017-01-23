@@ -73,8 +73,31 @@
       function Carousel(carouselEl) {
         var offset = 0;
         var width, slides, totalWidth, widths
-        init()
 
+        var startX, o, active
+        carouselEl.addEventListener('touchstart', function(e) {
+          e.preventDefault()
+          startX = e.touches[0].pageX
+          o = offset
+        })
+        carouselEl.addEventListener('touchmove', function(e) {
+          setOffset(o - (e.touches[0].pageX - startX))
+        })
+        carouselEl.addEventListener('touchend', function(e) {
+          let active = getActive()
+          const dir = offset - o > 0 ? 'right' : 'left'
+          if (dir === 'right' && (offset - widths[active] > 20)) {
+            active++
+          }
+          if (dir === 'left' && offset - widths[active] < 20) {
+            active--
+          }
+          animation(offset, active * width, 250, setOffset)
+          document.querySelector('#board').innerHTML = active
+        })
+
+        init()
+        window.addEventListener('resize', init)
         function init() {
           width = carouselEl.clientWidth
 
@@ -90,27 +113,6 @@
           }
           // offset
           setOffset(offset)
-          var startX, o, active
-          carouselEl.addEventListener('touchstart', function(e) {
-            e.preventDefault()
-            startX = e.touches[0].pageX
-            o = offset
-          })
-          carouselEl.addEventListener('touchmove', function(e) {
-            setOffset(o - (e.touches[0].pageX - startX))
-          })
-          carouselEl.addEventListener('touchend', function(e) {
-            let active = getActive()
-            const dir = offset - o > 0 ? 'right' : 'left'
-            if (offset - widths[active] > 0.8 * width) {
-              active++
-            }
-            if (offset - widths[active] < - 0.2 * width) {
-              active--
-            }
-            animation(offset, active * width, 300, setOffset)
-            document.querySelector('#board').innerHTML = active
-          })
         }
 
         function getActive() {
