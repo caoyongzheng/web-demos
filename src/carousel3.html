@@ -77,10 +77,11 @@
 
         function setOffset(o) {
           var index = parseInt(o / step % slides.length);
+          index = index < 0 ? (index + slides.length) : index
           var pre = (index - 1 < 0) ? (slides.length - 1) : index - 1
           var next = ((index + 1) > (slides.length - 1)) ? 0 : (index + 1)
           var p = parseInt(o) % parseInt(step)
-          console.log(o, index, p, step);
+          console.log(pre, index, next);
           slides[pre].style.top = `${-p-step}px`;
           slides[index].style.top = `${-p}px`;
           slides[next].style.top = `${-p + step}px`;
