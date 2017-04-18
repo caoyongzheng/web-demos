@@ -23,10 +23,6 @@
         height: 100%;
         box-sizing: border-box;
       }
-      [slide].transition {
-        -webkit-transition: left 300ms ease-in-out, top 300ms ease-in-out;
-        transition: left 300ms ease-in-out, top 300ms ease-in-out;
-      }
       .active {
         z-index: 1;
       }
@@ -56,8 +52,8 @@
   <body>
     <div id="carousel" class="carousel h-center">
       <img slide src="./imgs/demo1.jpg">
-      <img slide src="./imgs/demo1.jpg">
-      <img slide src="./imgs/demo1.jpg">
+      <img slide src="./imgs/demo2.jpg">
+      <img slide src="./imgs/demo3.jpg">
     </div>
     <div class="row">
       <div class="h-center" style="margin-top: 30px;">
@@ -70,31 +66,46 @@
       </div>
     </div>
     <script type="text/javascript">
+      function intervalNum(begin, end, num) {
+        const l = end - begin
+        if (l <= 0) {
+          throw 'wrong arguments'
+        }
+        while (num > end) {
+          num -= l
+        }
+        while (num < begin) {
+          num += l
+        }
+        return num
+      }
       function Carousel(carouselEl) {
         var offset = 0;
         var width, slides, totalWidth, widths
 
-        var startX, o, active
+        var startX, o, active, endX
         carouselEl.addEventListener('touchstart', function(e) {
           e.preventDefault()
           startX = e.touches[0].pageX
           o = offset
         })
         carouselEl.addEventListener('touchmove', function(e) {
+          e.preventDefault()
           setOffset(o - (e.touches[0].pageX - startX))
+          endX = e.touches[0].pageX
         })
         carouselEl.addEventListener('touchend', function(e) {
           let active = getActive()
-          const dir = offset - o > 0 ? 'right' : 'left'
-          if (dir === 'right' && (offset - widths[active] > 20)) {
+          const moveX = endX - startX
+          if (moveX < 50 && moveX > 0) {
             active++
           }
-          if (dir === 'left' && offset - widths[active] < 20) {
-            active--
+          if (moveX < -50 && moveX < 0) {
+            active++
           }
           animation(offset, active * width, 250, setOffset)
-          document.querySelector('#board').innerHTML = active
-        })
+          document.querySelector('#board').innerHTML = active % slides.length
+        }, true)
 
         init()
         window.addEventListener('resize', init)
@@ -120,12 +131,7 @@
         }
 
         function setOffset(o) {
-          while (o > totalWidth) {
-            o -= totalWidth
-          }
-          while (o < 0) {
-            o += totalWidth
-          }
+          o = intervalNum(0, totalWidth, o)
           let l = slides.length
           let nextWiths = []
           for (var i = 0; i < l; i++) {
@@ -169,6 +175,8 @@
           pre,
         }
       }
+    </script>
+    <script type="text/javascript">
       const c = new Carousel(document.getElementById('carousel'))
       document.querySelector('.next').addEventListener('click', function(e) {
         c.next();
