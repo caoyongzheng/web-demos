@@ -12,16 +12,20 @@
       .carousel {
         position: relative;
         width: 100%;
-        height: 300px;
+        height: 50px;
         overflow: hidden;
       }
       .carousel > [slide] {
         position: absolute;
         left: 0;
-        top: 0;
+        top: -100%;
         width: 100%;
         height: 100%;
         box-sizing: border-box;
+      }
+      .carousel > [slide]:first-child {
+        top:0;
+        left: 0;
       }
       /*[slide].transition {
         -webkit-transition: left 300ms ease-in-out, top 300ms ease-in-out;
@@ -58,6 +62,9 @@
       <img slide src="./imgs/demo1.jpg">
       <img slide src="./imgs/demo1.jpg">
       <img slide src="./imgs/demo1.jpg">
+      <img slide src="./imgs/demo1.jpg">
+      <img slide src="./imgs/demo1.jpg">
+      <img slide src="./imgs/demo1.jpg">
     </div>
     <div class="row">
       <div class="h-center" style="margin-top: 30px;">
@@ -74,15 +81,21 @@
         var offset = 0;
         var step = carouselEl.clientHeight
         var slides = carouselEl.querySelectorAll('[slide]');
-
+        var totalStep = step * slides.length
         function setOffset(o) {
-          var index = parseInt(o / step % slides.length);
+          while (o < 0) {
+            o += totalStep
+          }
+          while (o >= totalStep) {
+            o -= totalStep
+          }
+          var index = parseInt(o / step) % parseInt(slides.length);
           index = index < 0 ? (index + slides.length) : index
-          var pre = (index - 1 < 0) ? (slides.length - 1) : index - 1
           var next = ((index + 1) > (slides.length - 1)) ? 0 : (index + 1)
-          var p = parseInt(o) % parseInt(step)
-          console.log(pre, index, next);
-          slides[pre].style.top = `${-p-step}px`;
+          var p = o;
+          while (p >= step) {
+            p -= step
+          }
           slides[index].style.top = `${-p}px`;
           slides[next].style.top = `${-p + step}px`;
           offset = o
@@ -105,11 +118,12 @@
         function ease(x) {
           return 1 - Math.pow(1 - x, 2)
         }
+        var time = 300
         function next() {
-          animation(offset, offset + step, 250, setOffset)
+          animation(offset, offset + step, time, setOffset)
         }
         function pre() {
-          animation(offset, offset - step, 250, setOffset)
+          animation(offset, offset - step, time, setOffset)
         }
         return {
           next,
@@ -123,6 +137,9 @@
       document.querySelector('.pre').addEventListener('click', function(e) {
         c.pre();
       });
+      setInterval(function () {
+        c.next();
+      }, 3000);
     </script>
   </body>
 </html>
