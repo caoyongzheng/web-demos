@@ -108,6 +108,30 @@
       ctx.stroke()
       if (t < 1) window.requestAnimationFrame(draw)
     }
+    let moveX, moveY, dragNode = -1, nodeX, nodeY
+    canvasEl.addEventListener('mousedown', e => {
+      moveX = e.clientX
+      moveY = e.clientY
+      const rect = e.target.getBoundingClientRect();
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      dragNode = controlPoints.findIndex(p => Math.abs(p.x - x) <= 4 && Math.abs(p.y - y) <= 4)
+      if (~~dragNode >= 0) {
+        nodeX = controlPoints[dragNode].x
+        nodeY = controlPoints[dragNode].y
+      }
+    });
+    canvasEl.addEventListener('mouseup', () => {
+      dragNode = -1
+    });
+    canvasEl.addEventListener('mousemove', e => {
+      if (dragNode >= 0) {
+        controlPoints[dragNode].x = e.clientX - moveX + nodeX
+        controlPoints[dragNode].y = e.clientY - moveY + nodeY
+        draw()
+      }
+    });
   </script>
 </body>
 </html>
