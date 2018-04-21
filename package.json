@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "deploy": "gh-pages -d out",
+    "deploy": "gh-pages -d out -t .nojekyll",
     "dev": "next",
-    "export": "next build && next export && echo 'web-demos.caoyongzheng.com' > out/CNAME "
+    "export": "next build && next export && echo 'web-demos.caoyongzheng.com' > out/CNAME && echo '' > out/.nojekyll"
   },
   "repository": {
     "type": "git",
